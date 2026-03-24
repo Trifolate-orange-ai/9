@@ -1,0 +1,105 @@
+ 构造一个二维卷积层，它具有1个输出通道和形状为（1，2）的卷积核
+conv2d = nn.Conv2D(1, kernel_size=(1, 2), use_bias=False)
+conv2d.initialize()
+
+# 这个二维卷积层使用四维输入和输出格式（批量大小、通道、高度、宽度），
+# 其中批量大小和通道数都为1
+
+
+X = X.reshape(1, 1, 6, 8)
+Y = Y.reshape(1, 1, 6, 7)
+lr = 3e-2  # 学习率
+
+for i in range(10):
+    with autograd.record():
+        Y_hat = conv2d(X)
+        l = (Y_hat - Y) ** 2
+    l.backward()
+    # 迭代卷积核
+    conv2d.weight.data()[:] -= lr * conv2d.weight.grad()
+    if (i + 1) % 2 == 0:
+        print(f'epoch {i+1}, loss {float(l.sum()):.3f}')
+Copy to clipboard
+epoch 2, loss 4.949
+epoch 4, loss 0.831
+epoch 6, loss 0.140
+epoch 8, loss 0.024
+epoch 10, loss 0.004
+[07:16:32] ../src/base.cc:48: GPU context requested, but no GPUs found.
+# 构造一个二维卷积层，它具有1个输出通道和形状为（1，2）的卷积核
+conv2d = nn.Conv2d(1,1, kernel_size=(1, 2), bias=False)
+
+# 这个二维卷积层使用四维输入和输出格式（批量大小、通道、高度、宽度），
+# 其中批量大小和通道数都为1
+X = X.reshape((1, 1, 6, 8))
+Y = Y.reshape((1, 1, 6, 7))
+lr = 3e-2  # 学习率
+
+for i in range(10):
+    Y_hat = conv2d(X)
+    l = (Y_hat - Y) ** 2
+    conv2d.zero_grad()
+    l.sum().backward()
+    # 迭代卷积核
+    conv2d.weight.data[:] -= lr * conv2d.weight.grad
+    if (i + 1) % 2 == 0:
+        print(f'epoch {i+1}, loss {l.sum():.3f}')
+Copy to clipboard
+epoch 2, loss 6.422
+epoch 4, loss 1.225
+epoch 6, loss 0.266
+epoch 8, loss 0.070
+epoch 10, loss 0.022
+# 构造一个二维卷积层，它具有1个输出通道和形状为（1，2）的卷积核
+conv2d = tf.keras.layers.Conv2D(1, (1, 2), use_bias=False)
+
+# 这个二维卷积层使用四维输入和输出格式（批量大小、高度、宽度、通道），
+# 其中批量大小和通道数都为1
+X = tf.reshape(X, (1, 6, 8, 1))
+Y = tf.reshape(Y, (1, 6, 7, 1))
+lr = 3e-2  # 学习率
+
+Y_hat = conv2d(X)
+for i in range(10):
+    with tf.GradientTape(watch_accessed_variables=False) as g:
+        g.watch(conv2d.weights[0])
+        Y_hat = conv2d(X)
+        l = (abs(Y_hat - Y)) ** 2
+        # 迭代卷积核
+        update = tf.multiply(lr, g.gradient(l, conv2d.weights[0]))
+        weights = conv2d.get_weights()
+        weights[0] = conv2d.weights[0] - update
+        conv2d.set_weights(weights)
+        if (i + 1) % 2 == 0:
+            print(f'epoch {i+1}, loss {tf.reduce_sum(l):.3f}')
+Copy to clipboard
+epoch 2, loss 4.427
+epoch 4, loss 0.759
+epoch 6, loss 0.134
+epoch 8, loss 0.025
+epoch 10, loss 0.005
+# 构造一个二维卷积层，它具有1个输出通道和形状为（1，2）的卷积核
+conv2d = nn.Conv2D(1, 1, kernel_size=(1, 2))
+
+# 这个二维卷积层使用四维输入和输出格式（批量大小、通道、高度、宽度），
+# 其中批量大小和通道数都为1
+X = X.reshape((1, 1, 6, 8))
+Y = Y.reshape((1, 1, 6, 7))
+lr = 3e-2  # 学习率
+
+for i in range(10):
+    Y_hat = conv2d(X)
+    l = (Y_hat - Y) ** 2
+    conv2d.clear_gradients()
+    l.sum().backward()
+    # 迭代卷积核
+    with paddle.no_grad():
+        conv2d.weight[:] -= lr * conv2d.weight.grad
+    if (i + 1) % 2 == 0:
+        print(f'epoch {i+1}, loss {l.sum().item():.3f}')
+Copy to clipboard
+epoch 2, loss 16.734
+epoch 4, loss 6.225
+epoch 6, loss 2.444
+epoch 8, loss 0.983
+epoch 10, loss 0.400
