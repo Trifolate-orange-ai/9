@@ -1,0 +1,14 @@
+run(x_gpu1)  # 预热设备
+run(x_gpu2)
+npx.waitall()
+
+with d2l.Benchmark('GPU1 时间'):
+    run(x_gpu1)
+    npx.waitall()
+
+with d2l.Benchmark('GPU2 时间'):
+    run(x_gpu2)
+    npx.waitall()
+Copy to clipboard
+GPU1 时间: 0.5143 sec
+GPU2 时间: 0.5075 sec
