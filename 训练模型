@@ -1,0 +1,29 @@
+cls_loss = gluon.loss.SoftmaxCrossEntropyLoss()
+bbox_loss = gluon.loss.L1Loss()
+
+def calc_loss(cls_preds, cls_labels, bbox_preds, bbox_labels, bbox_masks):
+    cls = cls_loss(cls_preds, cls_labels)
+    bbox = bbox_loss(bbox_preds * bbox_masks, bbox_labels * bbox_masks)
+    return cls + bbox
+Copy to clipboard
+cls_loss = nn.CrossEntropyLoss(reduction='none')
+bbox_loss = nn.L1Loss(reduction='none')
+
+def calc_loss(cls_preds, cls_labels, bbox_preds, bbox_labels, bbox_masks):
+    batch_size, num_classes = cls_preds.shape[0], cls_preds.shape[2]
+    cls = cls_loss(cls_preds.reshape(-1, num_classes),
+                   cls_labels.reshape(-1)).reshape(batch_size, -1).mean(dim=1)
+    bbox = bbox_loss(bbox_preds * bbox_masks,
+                     bbox_labels * bbox_masks).mean(dim=1)
+    return cls + bbox
+Copy to clipboard
+cls_loss = nn.CrossEntropyLoss(reduction='none')
+bbox_loss = nn.L1Loss(reduction='none')
+
+def calc_loss(cls_preds, cls_labels, bbox_preds, bbox_labels, bbox_masks):
+    batch_size, num_classes = cls_preds.shape[0], cls_preds.shape[2]
+    cls = cls_loss(cls_preds.reshape((-1, num_classes)),
+                   cls_labels.reshape([-1])).reshape((batch_size, -1)).mean(axis=1)
+    bbox = bbox_loss(bbox_preds * bbox_masks,
+                     bbox_labels * bbox_masks).mean(axis=1)
+    return cls + bbox
