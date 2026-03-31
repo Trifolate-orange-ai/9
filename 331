@@ -1,0 +1,8 @@
+from mxnet import np, npx
+from mxnet.gluon import nn, rnn
+from d2l import mxnet as d2l
+
+npx.set_np()
+
+batch_size, num_steps = 32, 35
+train_iter, vocab = d2l.load_data_time_machine(batch_size, num_steps)
