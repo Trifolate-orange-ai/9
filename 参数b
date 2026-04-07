@@ -1,0 +1,18 @@
+class FixedHiddenMLP(nn.Block):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # 使用get_constant函数创建的随机权重参数在训练期间不会更新（即为常量参数）
+        self.rand_weight = self.params.get_constant(
+            'rand_weight', np.random.uniform(size=(20, 20)))
+        self.dense = nn.Dense(20, activation='relu')
+
+    def forward(self, X):
+        X = self.dense(X)
+        # 使用创建的常量参数以及relu和dot函数
+        X = npx.relu(np.dot(X, self.rand_weight.data()) + 1)
+        # 复用全连接层。这相当于两个全连接层共享参数
+        X = self.dense(X)
+        # 控制流
+        while np.abs(X).sum() > 1:
+            X /= 2
+        return X.sum()
