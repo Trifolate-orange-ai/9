@@ -1,0 +1,18 @@
+#@save
+def subsample(sentences, vocab):
+    """下采样高频词"""
+    # 排除未知词元'<unk>'
+    sentences = [[token for token in line if vocab[token] != vocab.unk]
+                 for line in sentences]
+    counter = d2l.count_corpus(sentences)
+    num_tokens = sum(counter.values())
+
+    # 如果在下采样期间保留词元，则返回True
+    def keep(token):
+        return(random.uniform(0, 1) <
+               math.sqrt(1e-4 / counter[token] * num_tokens))
+
+    return ([[token for token in line if keep(token)] for line in sentences],
+            counter)
+
+subsampled, counter = subsample(sentences, vocab)
