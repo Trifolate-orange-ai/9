@@ -1,0 +1,15 @@
+#@save
+def evaluate_accuracy_gpus(net, data_iter, split_f=d2l.split_batch):
+    """使用多个GPU计算数据集上模型的精度"""
+    # 查询设备列表
+    devices = list(net.collect_params().values())[0].list_ctx()
+    # 正确预测的数量，预测的总数量
+    metric = d2l.Accumulator(2)
+    for features, labels in data_iter:
+        X_shards, y_shards = split_f(features, labels, devices)
+        # 并行运行
+        pred_shards = [net(X_shard) for X_shard in X_shards]
+        metric.add(sum(float(d2l.accuracy(pred_shard, y_shard)) for
+                       pred_shard, y_shard in zip(
+                           pred_shards, y_shards)), labels.size)
+    return metric[0] / metric[1]
