@@ -1,0 +1,32 @@
+from mxnet import gluon, init, npx
+from mxnet.gluon import nn
+from d2l import mxnet as d2l
+
+npx.set_np()
+
+batch_size = 256
+train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size)
+Copy to clipboard
+[07:03:36] ../src/storage/storage.cc:196: Using Pooled (Naive) StorageManager for CPU
+import torch
+from torch import nn
+from d2l import torch as d2l
+
+batch_size = 256
+train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size)
+Copy to clipboard
+import tensorflow as tf
+from d2l import tensorflow as d2l
+
+batch_size = 256
+train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size)
+Copy to clipboard
+import warnings
+from d2l import paddle as d2l
+
+warnings.filterwarnings("ignore")
+import paddle
+from paddle import nn
+
+batch_size = 256
+train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size)
