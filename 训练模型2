@@ -1,0 +1,29 @@
+ratio = 4
+small_conv_arch = [(pair[0], pair[1] // ratio) for pair in conv_arch]
+net = vgg(small_conv_arch)
+Copy to clipboard
+ratio = 4
+small_conv_arch = [(pair[0], pair[1] // ratio) for pair in conv_arch]
+net = vgg(small_conv_arch)
+Copy to clipboard
+ratio = 4
+small_conv_arch = [(pair[0], pair[1] // ratio) for pair in conv_arch]
+# 回想一下，这必须是一个将被放入“d2l.train_ch6()”的函数，为了利用我们现有的CPU/GPU设备，这样模型构建/编译需要在strategy.scope()中
+net = lambda: vgg(small_conv_arch)
+Copy to clipboard
+ratio = 4
+small_conv_arch = [(pair[0], pair[1] // ratio) for pair in conv_arch]
+net = vgg(small_conv_arch)
+Copy to clipboard
+除了使用略高的学习率外，模型训练过程与 7.1节中的AlexNet类似。
+
+MXNet
+火炬
+张量流
+桨
+lr, num_epochs, batch_size = 0.05, 10, 128
+train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size, resize=224)
+d2l.train_ch6(net, train_iter, test_iter, num_epochs, lr, d2l.try_gpu())
+Copy to clipboard
+loss 0.176, train acc 0.936, test acc 0.923
+2462.9 examples/sec on gpu(0)
