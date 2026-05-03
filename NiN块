@@ -1,0 +1,43 @@
+from mxnet import np, npx
+from mxnet.gluon import nn
+from d2l import mxnet as d2l
+
+npx.set_np()
+
+def nin_block(num_channels, kernel_size, strides, padding):
+    blk = nn.Sequential()
+    blk.add(nn.Conv2D(num_channels, kernel_size, strides, padding,
+                      activation='relu'),
+            nn.Conv2D(num_channels, kernel_size=1, activation='relu'),
+            nn.Conv2D(num_channels, kernel_size=1, activation='relu'))
+    return blk
+    net = nn.Sequential()
+net.add(nin_block(96, kernel_size=11, strides=4, padding=0),
+        nn.MaxPool2D(pool_size=3, strides=2),
+        nin_block(256, kernel_size=5, strides=1, padding=2),
+        nn.MaxPool2D(pool_size=3, strides=2),
+        nin_block(384, kernel_size=3, strides=1, padding=1),
+        nn.MaxPool2D(pool_size=3, strides=2),
+        nn.Dropout(0.5),
+        # 标签类别数是10
+        nin_block(10, kernel_size=3, strides=1, padding=1),
+        # 全局平均汇聚层将窗口形状自动设置成输入的高和宽
+        nn.GlobalAvgPool2D(),
+        # 将四维的输出转成二维的输出，其形状为(批量大小,10)
+        nn.Flatten())
+        X = np.random.uniform(size=(1, 1, 224, 224))
+net.initialize()
+for layer in net:
+    X = layer(X)
+    print(layer.name, 'output shape:\t', X.shape)
+    sequential1 output shape:    (1, 96, 54, 54)
+pool0 output shape:  (1, 96, 26, 26)
+sequential2 output shape:    (1, 256, 26, 26)
+pool1 output shape:  (1, 256, 12, 12)
+sequential3 output shape:    (1, 384, 12, 12)
+pool2 output shape:  (1, 384, 5, 5)
+dropout0 output shape:       (1, 384, 5, 5)
+sequential4 output shape:    (1, 10, 5, 5)
+pool3 output shape:  (1, 10, 1, 1)
+flatten0 output shape:       (1, 10)
+[07:30:44] ../src/storage/storage.cc:196: Using Pooled (Naive) StorageManager for CPU
