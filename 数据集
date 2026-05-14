@@ -1,0 +1,15 @@
+trigram_tokens = [triple for triple in zip(
+    corpus[:-2], corpus[1:-1], corpus[2:])]
+trigram_vocab = d2l.Vocab(trigram_tokens)
+trigram_vocab.token_freqs[:10]
+Copy to clipboard
+[(('the', 'time', 'traveller'), 59),
+ (('the', 'time', 'machine'), 30),
+ (('the', 'medical', 'man'), 24),
+ (('it', 'seemed', 'to'), 16),
+ (('it', 'was', 'a'), 15),
+ (('here', 'and', 'there'), 15),
+ (('seemed', 'to', 'me'), 14),
+ (('i', 'did', 'not'), 14),
+ (('i', 'saw', 'the'), 13),
+ (('i', 'began', 'to'), 13)]
