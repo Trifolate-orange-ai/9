@@ -1,0 +1,7 @@
+num_epochs, lr = 500, 2
+d2l.train_ch8(model, train_iter, vocab, lr*1.0, num_epochs, device)
+Copy to clipboard
+perplexity 1.0, 131051.0 tokens/sec on gpu(0)
+time travelleryou can show black is white by argument said filby
+traveller with a slight accession ofcheerfulness really thi
+../_images/output_deep-rnn_d70a11_27_1.svg
